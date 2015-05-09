@@ -14,8 +14,9 @@ class AppWindow : public GlutWindow
     float _markx, _marky;
     int _w, _h;
     float accelx, accely;
-
     RectStash stash;
+    int highscore;
+    int lastscore;
 
    public :
     int count;

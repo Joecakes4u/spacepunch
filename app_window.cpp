@@ -17,7 +17,8 @@ AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
    count = 0;
    accelx = .008;
    accely = .016;
-
+   highscore = 0;
+   lastscore = 0;
  }
 
 // mouse events are in window coordinates, but your scene is in [0,1]x[0,1],
@@ -59,6 +60,10 @@ void AppWindow::handle ( const Event& e ){
             accelx *= 1.05;
             accely *= 1.05;
             count++;
+            if(count > highscore){
+              highscore = count;
+            }
+            lastscore = count;
           } else
           {
             std::cout << "FUCK YOU" << std::endl;
@@ -66,6 +71,9 @@ void AppWindow::handle ( const Event& e ){
             accelx = 0.008;
             accely = 0.016;
             started = false;
+            if(count > highscore){
+              highscore = count;
+            }
             count = 0;
           }
           stash.r[0]->reset();
@@ -124,12 +132,33 @@ void AppWindow::draw ()
     glMatrixMode( GL_MODELVIEW );
     glLoadIdentity();
 
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+    glEnable(GL_MULTISAMPLE);
+
+    glColor3d(0,0,0);
     glRasterPos2f(-.05,-.05);
-    glColor3f(1,1,1);
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, count/10 + 48);
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, count%10 + 48);
 
+    //Prints highest score
+    glColor3f(.1,.2,.8);
+    char hs[14] = "High Score: \0";
+    glRasterPos2f(-.99,.9);
+    for(int i = 0; i < 12; i++){
+      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, hs[i]);
+    }
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, highscore/10 + 48);
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, highscore%10 + 48);
 
+    //Prints last score
+    glColor3f(.8,.2,.3);
+    char ls[14] = "Last Score: \0";
+    glRasterPos2f(.55,.9);
+    for(int i = 0; i < 12; i++){
+      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ls[i]);
+    }
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, lastscore/10 + 48);
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, lastscore%10 + 48);
 
     if(!stash.r.empty()){
       for(std::vector<Rect*>::iterator i = stash.r.begin(); i != stash.r.end(); i++){
