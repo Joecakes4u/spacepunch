@@ -17,6 +17,7 @@ class AppWindow : public GlutWindow
     RectStash stash;
     int highscore;
     int lastscore;
+    int previousHighScore;
 
    public :
     int count;

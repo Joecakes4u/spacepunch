@@ -1,5 +1,6 @@
 
 # include <iostream>
+#include <fstream>
 # include "app_window.h"
 
 AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
@@ -17,7 +18,15 @@ AppWindow::AppWindow ( const char* label, int x, int y, int w, int h )
    count = 0;
    accelx = .008;
    accely = .016;
+
+   std::ifstream in;
+   in.open("free.bin");
+   in >> previousHighScore;
+   in.close();
    highscore = 0;
+   if(previousHighScore > highscore){
+    highscore = previousHighScore;
+   }
    lastscore = 0;
  }
 
@@ -63,8 +72,14 @@ void AppWindow::handle ( const Event& e ){
             if(count > highscore){
               highscore = count;
             }
-          } else
-          {
+            if(highscore > previousHighScore){
+              std::ofstream out;
+              out.open("free.bin");
+              out << highscore << std::endl;
+              out.close();
+            }
+          }
+          else{
             std::cout << "YOU LOSE!" << std::endl;
             lastscore = count;
             winner = false;
@@ -73,6 +88,12 @@ void AppWindow::handle ( const Event& e ){
             started = false;
             if(count > highscore){
               highscore = count;
+            }
+            if(highscore > previousHighScore){
+              std::ofstream out;
+              out.open("free.bin");
+              out << highscore << std::endl;
+              out.close();
             }
             count = 0;
           }
@@ -135,9 +156,12 @@ void AppWindow::draw ()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
     glEnable(GL_MULTISAMPLE);
 
-    glColor3d(0,0,0);
+    //Prints current score
+    glColor3d(1,1,1);
     glRasterPos2f(-.05,-.05);
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, count/10 + 48);
+    if(count/10 != 0){
+      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, count/10 + 48);
+    }
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, count%10 + 48);
 
     //Prints highest score
@@ -147,17 +171,21 @@ void AppWindow::draw ()
     for(int i = 0; i < 12; i++){
       glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, hs[i]);
     }
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, highscore/10 + 48);
+    if(highscore/10 != 0){
+      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, highscore/10 + 48);
+    }
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, highscore%10 + 48);
 
     //Prints last score
     glColor3f(.8,.2,.3);
     char ls[14] = "Last Score: \0";
-    glRasterPos2f(.55,.9);
+    glRasterPos2f(.51,.9);
     for(int i = 0; i < 12; i++){
       glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, ls[i]);
     }
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, lastscore/10 + 48);
+    if(lastscore/10 != 0){
+      glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, lastscore/10 + 48);
+    }
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, lastscore%10 + 48);
 
     if(!stash.r.empty()){
