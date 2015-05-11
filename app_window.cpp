@@ -63,10 +63,10 @@ void AppWindow::handle ( const Event& e ){
             if(count > highscore){
               highscore = count;
             }
-            lastscore = count;
           } else
           {
-            std::cout << "FUCK YOU" << std::endl;
+            std::cout << "YOU LOSE!" << std::endl;
+            lastscore = count;
             winner = false;
             accelx = 0.008;
             accely = 0.016;
