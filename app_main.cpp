@@ -13,7 +13,7 @@ int main ( int argc, char** argv )
    glutInitDisplayMode ( GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH );
 
    // Now create the window of your application:
-   AppWindow* w = new AppWindow ( "CSE165 Mini-Project", 300, 300, 640, 480 );
+   AppWindow* w = new AppWindow ( "Space Punch", 300, 300, 640, 480 );
 
    // Finally start the main loop:
    w->run ();
